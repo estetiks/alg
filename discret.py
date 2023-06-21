@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from tkinter import simpledialog
+import numpy as np
 
 class GraphApp:
     def __init__(self):
@@ -151,8 +152,15 @@ class GraphApp:
             messagebox.showinfo("Алгоритм Дейкстры", f"Путь: {path}, Длина: {distance[end_vertex]}")
 
     def floyd_warshall(self):
+        
         num_vertices = len(self.adjacency_matrix)
-        distances = [[float("inf") if i != j else 0 for j in range(num_vertices)] for i in range(num_vertices)]
+        distances = []
+        for i in range(num_vertices):
+            for j in range(num_vertices):
+                if i != j:
+                    distances.append(float('inf'))
+                else:
+                    distances.append(0)
 
         for i in range(num_vertices):
             for j in range(num_vertices):
@@ -164,7 +172,7 @@ class GraphApp:
                 for j in range(num_vertices):
                     distances[i][j] = min(distances[i][j], distances[i][k] + distances[k][j])
 
-        messagebox.showinfo("Алгоритм Флойда-Уоршелла", f"Матрица кратчайших путей:\n{distances}")
+        messagebox.showinfo("Алгоритм Флойда-Уоршелла", f"Матрица кратчайших путей:\n{np.array(distances)}")
 
     def ford_fulkerson(self):
         start_vertex, end_vertex = self.get_start_end_vertices()
@@ -196,22 +204,7 @@ class GraphApp:
 
         return max_flow
 
-    def bfs(self, graph, source, sink, parent):
-        num_vertices = len(graph)
-        visited = [False] * num_vertices
-        queue = [source]
-        visited[source] = True
 
-        while queue:
-            u = queue.pop(0)
-
-            for v in range(num_vertices):
-                if not visited[v] and graph[u][v] > 0:
-                    queue.append(v)
-                    visited[v] = True
-                    parent[v] = u
-
-        return True if visited[sink] else False
 
     def get_start_vertex(self):
         start_vertex = simpledialog.askinteger("Начальная вершина", "Введите номер начальной вершины:", parent=self.root)
